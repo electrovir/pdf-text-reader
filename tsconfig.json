@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "declaration": true,
+        "forceConsistentCasingInFileNames": true,
+        "module": "commonjs",
+        "noImplicitReturns": true,
+        "outDir": "dist",
+        "rootDir": "src",
+        "strict": true,
+        "target": "es6"
+    },
+    "exclude": ["node_modules", ".git", "dist"]
+}

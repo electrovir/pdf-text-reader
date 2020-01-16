@@ -1,0 +1,37 @@
+{
+    "name": "pdf-text-reader",
+    "version": "0.0.1",
+    "description": "Dead simple pdf text reader",
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/electrovir/pdf-text-reader.git"
+    },
+    "bugs": {
+        "url": "https://github.com/electrovir/pdf-text-reader/issues"
+    },
+    "homepage": "https://github.com/electrovir/pdf-text-reader#readme",
+    "author": {
+        "name": "electrovir"
+    },
+    "keywords": [
+        "pdf",
+        "text",
+        "reader"
+    ],
+    "main": "dist/index.js",
+    "scripts": {
+        "compile": "tsc",
+        "postinstall": "npm run compile",
+        "prepublishOnly": "npm install && npm run compile && npm test",
+        "test": "node dist/test/test.js"
+    },
+    "typings": "dist/index.d.ts",
+    "dependencies": {
+        "pdfjs-dist": "^2.2.228",
+        "typescript": "^3.7.4"
+    },
+    "devDependencies": {
+        "@types/pdfjs-dist": "^2.1.3"
+    }
+}
