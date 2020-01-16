@@ -22,7 +22,6 @@
     "main": "dist/index.js",
     "scripts": {
         "compile": "tsc",
-        "postinstall": "npm run compile",
         "prepublishOnly": "npm install && npm run compile && npm test",
         "test": "node dist/test/test.js"
     },
