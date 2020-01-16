@@ -42,21 +42,10 @@ export async function readPdfText(
 
 async function parsePage(pdfPage: pdfjs.PDFPageProxy): Promise<Page> {
     const rawContent = await pdfPage.getTextContent();
-    const items = rawContent.items.sort((a, b) => {
-        // sort by y position first (line number)
-        // b - a here because the bottom is y = 0 and we want that to be last (since it's the bottom)
-        const diff = b.transform[5] - a.transform[5];
-        if (diff) {
-            return diff;
-        } else {
-            // sort by x position second (position in line)
-            return a.transform[4] - b.transform[4];
-        }
-    });
     const lineData: {[y: number]: pdfjs.TextContentItem[]} = {};
 
-    for (let i = 0; i < items.length; i++) {
-        const item = items[i];
+    for (let i = 0; i < rawContent.items.length; i++) {
+        const item = rawContent.items[i];
         const y = item.transform[5];
         if (!lineData.hasOwnProperty(y)) {
             lineData[y] = [];
@@ -64,22 +53,30 @@ async function parsePage(pdfPage: pdfjs.PDFPageProxy): Promise<Page> {
         lineData[y].push(item);
     }
 
-    const yCoords = Object.keys(lineData).map(key => Number(key));
+    const yCoords = Object.keys(lineData)
+        .map(key => Number(key))
+        // b - a here because the bottom is y = 0 so we want that to be last
+        .sort((a, b) => b - a);
 
     const lines: string[] = [];
     for (let i = 0; i < yCoords.length; i++) {
         const y = yCoords[i];
-        const lineItems = lineData[y];
+        // sort by x position (position in line)
+        const lineItems = lineData[y].sort((a, b) => a.transform[4] - b.transform[4]);
         let line = lineItems[0].str;
         for (let j = 1; j < lineItems.length; j++) {
             const item = lineItems[j];
             const lastItem = lineItems[j - 1];
             const xDiff = item.transform[4] - (lastItem.transform[4] + lastItem.width);
 
+            // insert spaces for items that are far apart horizontally
             if (xDiff > item.height || xDiff > lastItem.height) {
                 const spaceCountA = Math.ceil(xDiff / item.height);
-                const spaceCountB = Math.ceil(xDiff / lastItem.height);
-                const spaceCount = spaceCountA > spaceCountB ? spaceCountA : spaceCountB;
+                let spaceCount = spaceCountA;
+                if (lastItem.height !== item.height) {
+                    const spaceCountB = Math.ceil(xDiff / lastItem.height);
+                    spaceCount = spaceCountA > spaceCountB ? spaceCountA : spaceCountB;
+                }
                 line += Array(spaceCount)
                     .fill('')
                     .join(' ');
