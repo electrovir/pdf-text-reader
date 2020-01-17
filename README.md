@@ -17,10 +17,12 @@ There is only one exported function:
 ```typescript
 import {readPdfText} from 'pdf-text-reader';
 
-(async () => {
+async function run() {
     const pages = await readPdfText('path/to/pdf/file.pdf');
     console.log(pages[0].lines);
-})();
+}
+
+run();
 ```
 
 See [src/index.ts](src/index.ts) for detailed argument and return value typing.

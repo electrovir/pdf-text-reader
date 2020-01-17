@@ -56,14 +56,32 @@ async function parsePage(pdfPage: pdfjs.PDFPageProxy): Promise<Page> {
     const yCoords = Object.keys(lineData)
         .map(key => Number(key))
         // b - a here because the bottom is y = 0 so we want that to be last
-        .sort((a, b) => b - a);
+        .sort((a, b) => b - a)
+        // insert an empty line between any 2 lines where their distance is greater than the upper line's height
+        .reduce((accum: number[], currentY, index, array) => {
+            const nextY = array[index + 1];
+            if (nextY != undefined) {
+                const currentLineHeight: number = lineData[currentY].reduce(
+                    (finalValue, current) => (finalValue > current.height ? finalValue : current.height),
+                    -1,
+                );
+
+                // currentY - nextY because currentY will be higher than nextY
+                if (Math.floor((currentY - nextY) / currentLineHeight) > 1) {
+                    const newHeight = currentY - currentLineHeight;
+                    accum.push(newHeight);
+                    lineData[newHeight] = [];
+                }
+            }
+            return accum.concat(currentY);
+        }, []);
 
     const lines: string[] = [];
     for (let i = 0; i < yCoords.length; i++) {
         const y = yCoords[i];
         // sort by x position (position in line)
         const lineItems = lineData[y].sort((a, b) => a.transform[4] - b.transform[4]);
-        let line = lineItems[0].str;
+        let line = lineItems.length ? lineItems[0].str : '';
         for (let j = 1; j < lineItems.length; j++) {
             const item = lineItems[j];
             const lastItem = lineItems[j - 1];
