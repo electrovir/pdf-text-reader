@@ -1,6 +1,6 @@
 {
     "name": "pdf-text-reader",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "description": "Dead simple pdf text reader",
     "license": "MIT",
     "repository": {
@@ -25,7 +25,7 @@
     "scripts": {
         "compile": "rm -rf dist && tsc",
         "prepublishOnly": "npm install && npm run compile && npm test",
-        "test": "npm run compile && node dist/test/test.js"
+        "test": "npm run compile; node dist/test/test.js"
     },
     "typings": "dist/index.d.ts",
     "dependencies": {

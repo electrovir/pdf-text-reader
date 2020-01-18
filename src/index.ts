@@ -68,9 +68,9 @@ async function parsePage(pdfPage: pdfjs.PDFPageProxy): Promise<Page> {
 
                 // currentY - nextY because currentY will be higher than nextY
                 if (Math.floor((currentY - nextY) / currentLineHeight) > 1) {
-                    const newHeight = currentY - currentLineHeight;
-                    accum.push(newHeight);
-                    lineData[newHeight] = [];
+                    const newY = currentY - currentLineHeight;
+                    lineData[newY] = [];
+                    return accum.concat(currentY, newY);
                 }
             }
             return accum.concat(currentY);

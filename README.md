@@ -31,7 +31,7 @@ See [src/index.ts](src/index.ts) for detailed argument and return value typing.
 
 This uses Mozilla's [pdf.js](https://github.com/mozilla/pdf.js/) through the [pdfjs-dist](https://www.npmjs.com/package/pdfjs-dist) npm package. As such, any valid input to pdf.js's `getDocument` function are valid inputs to this package's `readPdfText` function. See [pdfjs-dist in DefinitelyTyped](https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/pdfjs-dist/index.d.ts) for info on that or, for just the type information, read [src/index.ts](src/index.ts) in this repo.
 
-This package simply reads the output of `pdfjs.getDocument` and sorts it into lines based on the text vertical position in the document. It also inserts spaces for text on the same line that is far apart horizontally.
+This package simply reads the output of `pdfjs.getDocument` and sorts it into lines based on the text vertical position in the document. It also inserts spaces for text on the same line that is far apart horizontally and new lines in between lines that are far apart vertically.
 
 Example:
 
