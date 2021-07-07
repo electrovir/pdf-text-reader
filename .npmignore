@@ -1,6 +1,7 @@
 .prettierrc.json
 dist/test
 src
+sample-files
 .cspell.json
 .github
 .vscode

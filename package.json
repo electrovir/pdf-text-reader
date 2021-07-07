@@ -1,6 +1,6 @@
 {
     "name": "pdf-text-reader",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "description": "Dead simple pdf text reader",
     "keywords": [
         "pdf",
@@ -31,12 +31,13 @@
         "prepublishOnly": "npm run test:full",
         "spellcheck": "cspell --no-progress --unique \"./**/*\"",
         "test:full": "npm run test && npm run spellcheck -- --no-progress && npm run format:check",
-        "test": "npm run compile; node dist/test/test.js"
+        "test": "npm run compile; test-vir \"./dist/**/*.test.js\""
     },
     "dependencies": {
         "pdfjs-dist": "^2.8.335"
     },
     "devDependencies": {
+        "@types/node": "^16.0.0",
         "cspell": "^5.6.6",
         "prettier": "^2.3.2",
         "prettier-plugin-jsdoc": "^0.3.23",
