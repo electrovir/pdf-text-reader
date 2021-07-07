@@ -1,13 +1,9 @@
 import {existsSync} from 'fs';
-import {join} from 'path';
+import {dirname, join} from 'path';
 import {testGroup} from 'test-vir';
 import {readPdfText} from '../index';
 
-const dummyFilePath = join(
-    __dirname.replace(new RegExp(join(`(src|dist)`, 'test')), ''),
-    'sample-files',
-    'dummy.pdf',
-);
+const dummyFilePath = join(dirname(dirname(__dirname)), 'sample-files', 'dummy.pdf');
 
 testGroup((runTest) => {
     runTest({

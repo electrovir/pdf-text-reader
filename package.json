@@ -31,7 +31,7 @@
         "prepublishOnly": "npm run test:full",
         "spellcheck": "cspell --no-progress --unique \"./**/*\"",
         "test:full": "npm run test && npm run spellcheck -- --no-progress && npm run format:check",
-        "test": "npm run compile; test-vir \"./dist/**/*.test.js\""
+        "test": "npm run compile && test-vir \"./dist/**/*.test.js\""
     },
     "dependencies": {
         "pdfjs-dist": "^2.8.335"
