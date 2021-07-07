@@ -1,3 +1,7 @@
 .prettierrc.json
 dist/test
 src
+.cspell.json
+.github
+.vscode
+tsconfig.json
