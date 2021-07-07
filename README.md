@@ -10,8 +10,6 @@ Dead simple PDF text reader.
 npm install pdf-text-reader
 ```
 
-You'll probably get peer dependency warnings. You are safe to completely ignore these. You only need them if you want to use `pdf.js`'s more complicated specific types. To do that just install the correct version (as per the warning) of the [`pdfjs-dist`](https://www.npmjs.com/package/pdfjs-dist) package. Installing it independently like that is completely unnecessary if you're simply using this package to read PDFs from file paths or URLs.
-
 # Usage
 
 ```typescript
@@ -47,11 +45,13 @@ The number of spaces to insert is calculated by an extremely naive but very simp
 
 If you need lower level parsing control, you can also use the exported `parsePageItems` function. This only reads one page at a time as seen below. This function is used by `readPdfText` so the output will be identical for the same pdf page.
 
-You must also have the [`pdfjs-dist`](https://www.npmjs.com/package/pdfjs-dist) npm package independently installed to do this.
+You must have the [`pdfjs-dist`](https://www.npmjs.com/package/pdfjs-dist) npm package independently installed to do this.
 
 ```typescript
 import {parsePageItems} from 'pdf-text-reader';
 import * as pdfjs from 'pdfjs-dist';
+// you might need this version of the import:
+// import * as pdfjs from 'pdfjs-dist/legacy/build/pdf';
 
 async function run() {
     const doc = await pdfjs.getDocument('myDocument.pdf').promise;
