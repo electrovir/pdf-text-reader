@@ -1,8 +1,9 @@
-.prettierrc.json
-dist/test
-src
-sample-files
 .cspell.json
+.gitattributes
 .github
+.prettierrc.json
 .vscode
+dist/test
+sample-files
+src
 tsconfig.json

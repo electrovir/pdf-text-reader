@@ -1,6 +1,6 @@
 {
     "name": "pdf-text-reader",
-    "version": "2.0.1",
+    "version": "2.0.2",
     "description": "Dead simple pdf text reader",
     "keywords": [
         "pdf",
@@ -28,7 +28,7 @@
         "format:base": "prettier --ignore-path .gitignore \"./{,!(dist)/**/}*.+(ts|json|html|css)\"",
         "format:check": "npm run format:base -- --check",
         "format": "npm run format:base -- --write",
-        "prepublishOnly": "npm run test:full",
+        "prepublishOnly": "npm install && npm run test:full",
         "spellcheck": "cspell --no-progress --unique \"./**/*\"",
         "test:full": "npm run test && npm run spellcheck -- --no-progress && npm run format:check",
         "test": "npm run compile && test-vir \"./dist/**/*.test.js\""
