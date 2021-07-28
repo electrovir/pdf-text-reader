@@ -58,7 +58,7 @@ export async function readPdfText(
 
 async function parsePage(pdfPage: PDFPageProxy) {
     const rawContent = await pdfPage.getTextContent();
-    return parsePageItems(rawContent.items);
+    return parsePageItems(rawContent.items.filter((item): item is TextItem => 'str' in item));
 }
 
 /**
