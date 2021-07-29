@@ -3,7 +3,7 @@
 .github
 .prettierrc.json
 .vscode
-dist/test
+dist/tests
 sample-files
 src
 tsconfig.json

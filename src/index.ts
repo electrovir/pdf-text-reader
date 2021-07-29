@@ -31,14 +31,28 @@ export type ProgressData = {
  * @param passwordCallback Used to request a password if wrong or no password was provided. The
  *   callback receives two parameters: function that needs to be called with new password and the reason.
  * @param progressCallback Progress callback.
- * @returns A promise that is resolved with an array of each page's text content.
+ * @param concatIntoSingleString If set to true, all of the PDFs pages are concatenated into a
+ *   single string and that is returned.
+ * @returns A promise that is resolved with an array of each page's text content
  */
 export async function readPdfText(
     source: string | URL | TypedArray | PDFDataRangeTransport | DocumentInitParameters,
+    concatIntoSingleString: true,
     passwordCallback?: (fn: (password: string) => void, reason: string) => string,
     progressCallback?: (progressData: ProgressData) => void,
-) {
-    // as any here because "getDocument"'s type signature uses different overloads rather than a single union type
+): Promise<string>;
+export async function readPdfText(
+    source: string | URL | TypedArray | PDFDataRangeTransport | DocumentInitParameters,
+    concatIntoSingleString?: false | undefined,
+    passwordCallback?: (fn: (password: string) => void, reason: string) => string,
+    progressCallback?: (progressData: ProgressData) => void,
+): Promise<Page[]>;
+export async function readPdfText(
+    source: string | URL | TypedArray | PDFDataRangeTransport | DocumentInitParameters,
+    concatIntoSingleString?: boolean,
+    passwordCallback?: (fn: (password: string) => void, reason: string) => string,
+    progressCallback?: (progressData: ProgressData) => void,
+): Promise<string | Page[]> {
     const documentLoadingTask = getDocument(source);
     documentLoadingTask.onProgress = progressCallback;
     documentLoadingTask.onPassword = passwordCallback;
@@ -53,7 +67,13 @@ export async function readPdfText(
         pages.push(await parsePage(await document.getPage(i + 1)));
     }
 
-    return pages;
+    if (concatIntoSingleString) {
+        return pages.reduce((accum, page) => {
+            return accum.concat(page.lines.join('\n') + '\n');
+        }, '');
+    } else {
+        return pages;
+    }
 }
 
 async function parsePage(pdfPage: PDFPageProxy) {
@@ -108,7 +128,9 @@ export function parsePageItems(pdfItems: TextItem[]): Page {
     for (let i = 0; i < yCoords.length; i++) {
         const y = yCoords[i];
         // sort by x position (position in line)
-        const lineItems = lineData[y].sort((a, b) => a.transform[4] - b.transform[4]);
+        const lineItems = lineData[y]
+            .sort((a, b) => a.transform[4] - b.transform[4])
+            .filter((item) => !!item.str);
         let line = lineItems.length ? lineItems[0].str : '';
         for (let j = 1; j < lineItems.length; j++) {
             const item = lineItems[j];
@@ -116,7 +138,7 @@ export function parsePageItems(pdfItems: TextItem[]): Page {
             const xDiff = item.transform[4] - (lastItem.transform[4] + lastItem.width);
 
             // insert spaces for items that are far apart horizontally
-            if (xDiff > item.height || xDiff > lastItem.height) {
+            if (item.height !== 0 && (xDiff > item.height || xDiff > lastItem.height)) {
                 const spaceCountA = Math.ceil(xDiff / item.height);
                 let spaceCount = spaceCountA;
                 if (lastItem.height !== item.height) {
