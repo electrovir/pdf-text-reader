@@ -9,6 +9,7 @@ const testFiles: TestPdfInput[] = [
     },
     {
         filePath: pdfkitOutputPdf,
+        // cspell:disable
         expectedContent: `Some text with an embedded font!
 PNG and JPEG images:
 Here is some vector graphics...
@@ -39,7 +40,13 @@ Here is a link!
 One
 Two
 Three`,
-        lineCounts: [2, 23, 1, 4],
+        // cspell:enable
+        lineCounts: [
+            2,
+            23,
+            1,
+            4,
+        ],
     },
 ];
 

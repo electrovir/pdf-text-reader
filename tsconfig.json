@@ -1,17 +1,35 @@
 {
     "compilerOptions": {
         "alwaysStrict": true,
+        "baseUrl": ".",
         "declaration": true,
-        "declarationMap": false,
+        "esModuleInterop": true,
+        "exactOptionalPropertyTypes": true,
         "forceConsistentCasingInFileNames": true,
         "module": "CommonJS",
+        "moduleResolution": "Node",
         "noImplicitAny": true,
+        "noImplicitOverride": true,
         "noImplicitReturns": true,
         "noImplicitThis": true,
+        "noUncheckedIndexedAccess": true,
         "outDir": "dist",
         "rootDir": "src",
+        "skipDefaultLibCheck": true,
+        "skipLibCheck": true,
         "strict": true,
-        "target": "ES2018"
+        "target": "ESNext",
+        "useUnknownInCatchVariables": true
     },
-    "exclude": ["node_modules", ".git", "dist"]
+    "exclude": [
+        "dist",
+        "node_modules",
+        "separate-configs",
+        "test-files"
+    ],
+    "ts-node": {
+        "compilerOptions": {
+            "module": "CommonJS"
+        }
+    }
 }

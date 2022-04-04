@@ -12,12 +12,14 @@ npm install pdf-text-reader
 
 # Usage
 
-```typescript
+<!-- example-link: src/readme-examples/read-pdf-text.example.ts -->
+
+```TypeScript
 import {readPdfText} from 'pdf-text-reader';
 
 async function run() {
     const pages = await readPdfText('path/to/pdf/file.pdf');
-    console.log(pages[0].lines);
+    console.log(pages[0]?.lines);
 }
 
 run();
@@ -45,19 +47,20 @@ The number of spaces to insert is calculated by an extremely naive but very simp
 
 If you need lower level parsing control, you can also use the exported `parsePageItems` function. This only reads one page at a time as seen below. This function is used by `readPdfText` so the output will be identical for the same pdf page.
 
-You must have the [`pdfjs-dist`](https://www.npmjs.com/package/pdfjs-dist) npm package independently installed to do this.
+You may need the [`pdfjs-dist`](https://www.npmjs.com/package/pdfjs-dist) npm package independently installed to do this.
 
-```typescript
-import {parsePageItems} from 'pdf-text-reader';
+<!-- example-link: src/readme-examples/lower-level-controls.example.ts -->
+
+```TypeScript
 import * as pdfjs from 'pdfjs-dist';
-// you might need this version of the import:
-// import * as pdfjs from 'pdfjs-dist/legacy/build/pdf';
+import {TextItem} from 'pdfjs-dist/types/src/display/api';
+import {parsePageItems} from 'pdf-text-reader';
 
 async function run() {
     const doc = await pdfjs.getDocument('myDocument.pdf').promise;
     const page = await doc.getPage(1);
     const content = await page.getTextContent();
-    const items = content.items;
+    const items: TextItem[] = content.items.filter((item): item is TextItem => 'str' in item);
     const parsedPage = parsePageItems(items);
     console.log(parsedPage.lines);
 }

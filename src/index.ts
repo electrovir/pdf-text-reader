@@ -5,7 +5,7 @@ import {
     PDFPageProxy,
     TextItem,
     TypedArray,
-} from 'pdfjs-dist/types/display/api';
+} from 'pdfjs-dist/types/src/display/api';
 
 export type Page = {
     lines: string[];
@@ -54,8 +54,12 @@ export async function readPdfText(
     progressCallback?: (progressData: ProgressData) => void,
 ): Promise<string | Page[]> {
     const documentLoadingTask = getDocument(source);
-    documentLoadingTask.onProgress = progressCallback;
-    documentLoadingTask.onPassword = passwordCallback;
+    if (progressCallback) {
+        documentLoadingTask.onProgress = progressCallback;
+    }
+    if (passwordCallback) {
+        documentLoadingTask.onPassword = passwordCallback;
+    }
 
     const document = await documentLoadingTask.promise;
 
@@ -93,11 +97,13 @@ export function parsePageItems(pdfItems: TextItem[]): Page {
 
     for (let i = 0; i < pdfItems.length; i++) {
         const item = pdfItems[i];
-        const y = item.transform[5];
+        const y = item?.transform[5];
         if (!lineData.hasOwnProperty(y)) {
             lineData[y] = [];
         }
-        lineData[y].push(item);
+        if (item) {
+            lineData[y]?.push(item);
+        }
     }
 
     const yCoords = Object.keys(lineData)
@@ -108,7 +114,8 @@ export function parsePageItems(pdfItems: TextItem[]): Page {
         .reduce((accum: number[], currentY, index, array) => {
             const nextY = array[index + 1];
             if (nextY != undefined) {
-                const currentLineHeight: number = lineData[currentY].reduce(
+                const currentLine = lineData[currentY]!;
+                const currentLineHeight: number = currentLine.reduce(
                     (finalValue, current) =>
                         finalValue > current.height ? finalValue : current.height,
                     -1,
@@ -127,14 +134,18 @@ export function parsePageItems(pdfItems: TextItem[]): Page {
     const lines: string[] = [];
     for (let i = 0; i < yCoords.length; i++) {
         const y = yCoords[i];
+        if (y == undefined) {
+            continue;
+        }
         // sort by x position (position in line)
-        const lineItems = lineData[y]
-            .sort((a, b) => a.transform[4] - b.transform[4])
-            .filter((item) => !!item.str);
-        let line = lineItems.length ? lineItems[0].str : '';
+        const lineItems = lineData[y]!.sort((a, b) => a.transform[4] - b.transform[4]).filter(
+            (item) => !!item.str,
+        );
+        const firstLineItem = lineItems[0]!;
+        let line = lineItems.length ? firstLineItem.str : '';
         for (let j = 1; j < lineItems.length; j++) {
-            const item = lineItems[j];
-            const lastItem = lineItems[j - 1];
+            const item = lineItems[j]!;
+            const lastItem = lineItems[j - 1]!;
             const xDiff = item.transform[4] - (lastItem.transform[4] + lastItem.width);
 
             // insert spaces for items that are far apart horizontally
