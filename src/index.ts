@@ -149,7 +149,11 @@ export function parsePageItems(pdfItems: TextItem[]): Page {
             const xDiff = item.transform[4] - (lastItem.transform[4] + lastItem.width);
 
             // insert spaces for items that are far apart horizontally
-            if (item.height !== 0 && (xDiff > item.height || xDiff > lastItem.height)) {
+            if (
+                item.height !== 0 &&
+                lastItem.height !== 0 &&
+                (xDiff > item.height || xDiff > lastItem.height)
+            ) {
                 const spaceCountA = Math.ceil(xDiff / item.height);
                 let spaceCount = spaceCountA;
                 if (lastItem.height !== item.height) {
