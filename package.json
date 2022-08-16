@@ -1,6 +1,6 @@
 {
     "name": "pdf-text-reader",
-    "version": "3.0.1",
+    "version": "3.0.2",
     "description": "Dead simple pdf text reader",
     "keywords": [
         "pdf",
@@ -32,10 +32,10 @@
         "test:full": "npm test && npm run spellcheck && virmator format check && virmator code-in-markdown --check README.md"
     },
     "dependencies": {
-        "pdfjs-dist": "2.13.216"
+        "pdfjs-dist": "2.15.349"
     },
     "devDependencies": {
-        "@types/node": "17.0.23",
+        "@types/node": "18.7.5",
         "virmator": "2.0.5"
     }
 }
