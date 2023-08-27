@@ -9,33 +9,52 @@
         "pdf-text-reader",
         "reader"
     ],
-    "homepage": "https://github.com/electrovir/pdf-text-reader#readme",
+    "homepage": "https://github.com/electrovir/pdf-text-reader",
     "bugs": {
         "url": "https://github.com/electrovir/pdf-text-reader/issues"
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/electrovir/pdf-text-reader.git"
+        "url": "https://github.com/electrovir/pdf-text-reader"
     },
-    "license": "MIT",
+    "license": "(MIT or CC0 1.0)",
     "author": {
         "name": "electrovir",
         "url": "https://github.com/electrovir"
     },
     "main": "dist/index.js",
-    "typings": "dist/index.d.ts",
+    "types": "dist/index.d.ts",
     "scripts": {
+        "compile": "virmator compile",
+        "docs:update": "virmator code-in-markdown",
         "format": "virmator format",
         "prepublishOnly": "npm install && virmator compile && npm run test:full",
+        "publish": "virmator publish \"npm run compile && npm run test:all\"",
         "spellcheck": "virmator spellcheck",
         "test": "virmator test",
-        "test:full": "npm test && npm run spellcheck && virmator format check && virmator code-in-markdown --check README.md"
+        "test:all": "concurrently --colors --kill-others-on-fail -c auto --names types,tests,spelling,format,docs \"npm run test:types\" \"npm run test:coverage\" \"npm run test:spelling\" \"npm run test:format\" \"npm run test:docs\"",
+        "test:coverage": "npm run test coverage",
+        "test:docs": "virmator code-in-markdown check",
+        "test:format": "virmator format check",
+        "test:spelling": "virmator spellcheck",
+        "test:types": "tsc --noEmit",
+        "test:web": "virmator test-web"
     },
     "dependencies": {
-        "pdfjs-dist": "2.15.349"
+        "pdfjs-dist": "3.9.179"
     },
     "devDependencies": {
-        "@types/node": "18.7.5",
-        "virmator": "2.0.5"
+        "@types/node": "20.5.6",
+        "esbuild": "^0.19.2",
+        "npm-check-updates": "^16.12.3",
+        "prettier": "^2.8.8",
+        "prettier-plugin-interpolated-html-tags": "^0.0.4",
+        "prettier-plugin-jsdoc": "^0.4.2",
+        "prettier-plugin-multiline-arrays": "^2.0.0",
+        "prettier-plugin-organize-imports": "^3.2.3",
+        "prettier-plugin-packagejson": "^2.4.5",
+        "prettier-plugin-sort-json": "^2.0.0",
+        "prettier-plugin-toml": "^0.3.1",
+        "virmator": "^7.3.2"
     }
 }
