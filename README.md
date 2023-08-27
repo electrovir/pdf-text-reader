@@ -12,26 +12,42 @@ npm install pdf-text-reader
 
 # Usage
 
-<!-- example-link: src/readme-examples/read-pdf-text.example.ts -->
+-   Read all pages into a single string with `readPdfText`:
 
-```TypeScript
-import {readPdfText} from 'pdf-text-reader';
+    <!-- example-link: src/readme-examples/read-pdf-text.example.ts -->
 
-async function run() {
-    const pages = await readPdfText('path/to/pdf/file.pdf');
-    console.log(pages[0]?.lines);
-}
+    ```TypeScript
+    import {readPdfText} from 'pdf-text-reader';
 
-run();
-```
+    async function main() {
+        const pdfText: string = await readPdfText({url: 'path/to/pdf/file.pdf'});
+        console.info(pdfText);
+    }
 
-See [src/index.ts](https://github.com/electrovir/pdf-text-reader/tree/master/src/index.ts) (in the git repo) or [dist/index.d.ts](dist/index.d.ts) (in the npm package when installed locally) for detailed argument and return value typing.
+    main();
+    ```
+
+-   Read a PDF into individual pages with `readPdfPages`:
+    <!-- example-link: src/readme-examples/read-pdf-pages.example.ts -->
+
+    ```TypeScript
+    import {readPdfPages} from 'pdf-text-reader';
+
+    async function main() {
+        const pages = await readPdfPages({url: 'path/to/pdf/file.pdf'});
+        console.info(pages[0]?.lines);
+    }
+
+    main();
+    ```
+
+See [the types](https://github.com/electrovir/pdf-text-reader/tree/master/src/read-pdf.ts) for detailed argument and return value types.
 
 # Details
 
-This uses Mozilla's [`pdf.js`](https://github.com/mozilla/pdf.js/) package through its [`pdfjs-dist`](https://www.npmjs.com/package/pdfjs-dist) distribution on npm. As such, any valid input to `pdf.js`'s `getDocument` function are valid inputs to _this_ package's `readPdfText` function. See [`pdfjs-dist`'s types folder](https://github.com/mozilla/pdfjs-dist/blob/master/types/display/api.d.ts) for more info on that or, for just the type information, read [src/index.ts](https://github.com/electrovir/pdf-text-reader/tree/master/src/index.ts) in this repo.
+This uses Mozilla's [`pdf.js`](https://github.com/mozilla/pdf.js/) package through its [`pdfjs-dist`](https://www.npmjs.com/package/pdfjs-dist) distribution on npm.
 
-This package simply reads the output of `pdfjs.getDocument` and sorts it into lines based on the text vertical position in the document. It also inserts spaces for text on the same line that is far apart horizontally and new lines in between lines that are far apart vertically.
+This package simply reads the output of `pdfjs.getDocument` and sorts it into lines based on text position in the document. It also inserts spaces for text on the same line that is far apart horizontally and new lines in between lines that are far apart vertically.
 
 Example:
 
@@ -45,27 +61,25 @@ The number of spaces to insert is calculated by an extremely naive but very simp
 
 # Low Level Control
 
-If you need lower level parsing control, you can also use the exported `parsePageItems` function. This only reads one page at a time as seen below. This function is used by `readPdfText` so the output will be identical for the same pdf page.
+If you need lower level parsing control, you can also use the exported `parsePageItems` function. This only reads one page at a time as seen below. This function is used by `readPdfPages` so the output will be identical for the same pdf page.
 
-You may need the [`pdfjs-dist`](https://www.npmjs.com/package/pdfjs-dist) npm package independently installed to do this.
+You may need to independently install the [`pdfjs-dist`](https://www.npmjs.com/package/pdfjs-dist) npm package for this to work.
 
 <!-- example-link: src/readme-examples/lower-level-controls.example.ts -->
 
 ```TypeScript
 import * as pdfjs from 'pdfjs-dist';
-import {TextItem} from 'pdfjs-dist/types/src/display/api';
+import type {TextItem} from 'pdfjs-dist/types/src/display/api';
 import {parsePageItems} from 'pdf-text-reader';
 
-async function run() {
+async function main() {
     const doc = await pdfjs.getDocument('myDocument.pdf').promise;
-    const page = await doc.getPage(1);
+    const page = await doc.getPage(1); // 1-indexed
     const content = await page.getTextContent();
     const items: TextItem[] = content.items.filter((item): item is TextItem => 'str' in item);
     const parsedPage = parsePageItems(items);
-    console.log(parsedPage.lines);
+    console.info(parsedPage.lines);
 }
 
-run();
+main();
 ```
-
-See [src/index.ts](https://github.com/electrovir/pdf-text-reader/tree/master/src/index.ts) (in the git repo) or [dist/index.d.ts](dist/index.d.ts) (in the npm package when installed locally) for detailed argument and return value typing.

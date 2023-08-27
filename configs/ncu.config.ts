@@ -6,6 +6,11 @@ export const ncuConfig: RunOptions = {
     // exclude these
     reject: [
         ...baseNcuConfig.reject,
+        /**
+         * Different versions of this have global pollution issues we're currently on a version that
+         * doesn't.
+         */
+        'pdfjs-dist',
     ],
     // include only these
     filter: [],
