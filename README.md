@@ -1,7 +1,5 @@
 # PDF Text Reader
 
-[![tests](https://github.com/electrovir/pdf-text-reader/workflows/tests/badge.svg)](https://github.com/electrovir/pdf-text-reader/actions)
-
 Dead simple PDF text reader.
 
 # Install
