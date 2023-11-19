@@ -40,7 +40,6 @@
         "test:web": "virmator test-web"
     },
     "dependencies": {
-        "@augment-vir/common": "^16.4.0",
         "pdfjs-dist": "3.9.179"
     },
     "devDependencies": {

@@ -1,4 +1,3 @@
-import {PartialAndUndefined} from '@augment-vir/common';
 import {join} from 'path';
 import {getDocument} from 'pdfjs-dist';
 import type {
@@ -20,7 +19,15 @@ export type PdfProgressData = {
     total: number;
 };
 
-export type ReadPdfTextParams = PartialAndUndefined<{
+/**
+ * Same as the built-in Partial type but also allows each property to be undefined. Compatible with
+ * PartialAndUndefined from @augment-vir/common.
+ */
+export type PartialWithUndefined<T extends object> = {
+    [Prop in keyof T]?: T[Prop] | undefined;
+};
+
+export type ReadPdfTextParams = PartialWithUndefined<{
     /** Password used to open a PDF that's password protected. */
     password: string;
     /** This callback will be periodically called while PDF reading is in progress. */
