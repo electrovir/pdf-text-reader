@@ -1,10 +1,13 @@
 **/*/readme-examples/
 **/*/test/
+*.book-helper.*
+*.book.*
 *.d.ts.map
 *.test-helper.*
 *.test.*
 *.tgz
 .*
+.not-committed/
 /Icon?
 /configs/
 /coverage/
@@ -13,6 +16,10 @@
 /src/
 /www-static/
 bash-scripts/
+dist-docs/
+generated-config-*
 index.html
 test-files/
+ts.out/
 tsconfig*.json
+tsconfig.tsbuildinfo
