@@ -10,10 +10,12 @@ import {RequireExactlyOne} from 'type-fest';
 
 export type {BinaryData, DocumentInitParameters} from 'pdfjs-dist/types/src/display/api';
 
+/** A single page within a PDF file. */
 export type PdfPage = {
     lines: string[];
 };
 
+/** Progress updates sent by the `pdfjs-dist` dependency. */
 export type PdfProgressData = {
     loaded: number;
     total: number;
@@ -27,6 +29,7 @@ export type PartialWithUndefined<T extends object> = {
     [Prop in keyof T]?: T[Prop] | undefined;
 };
 
+/** All options for reading pdf text to function. Most are optional. */
 export type ReadPdfTextParams = PartialWithUndefined<{
     /** Password used to open a PDF that's password protected. */
     password: string;
@@ -53,11 +56,12 @@ export type ReadPdfTextParams = PartialWithUndefined<{
         url: string;
         /** PDF file data that has already been read from a PDF file. */
         data: BinaryData;
+        /** All other options that the Mozilla `pdfjs-dist` package supports. */
         allOptions: DocumentInitParameters;
     }>;
 
 /**
- * Read a pdf file and convert it into lines of text.
+ * Read a PDF and convert it into lines of text.
  *
  * If a URL is used to fetch the PDF data a standard XMLHttpRequest(XHR) is used, which means it
  * must follow the same origin rules that any XHR does e.g. No cross domain requests without CORS.
@@ -97,11 +101,13 @@ export async function readPdfPages({
     return pages;
 }
 
+/** Reads a PDF into a single string. */
 export async function readPdfText(params: ReadPdfTextParams): Promise<string> {
     const pdfPages = await readPdfPages(params);
     return combinePagesIntoSingleString(pdfPages);
 }
 
+/** Combine all PDF pages into a single string. */
 export function combinePagesIntoSingleString(pages: PdfPage[]): string {
     return pages
         .map((page) => page.lines)
@@ -109,7 +115,8 @@ export function combinePagesIntoSingleString(pages: PdfPage[]): string {
         .join('\n');
 }
 
-export async function parsePage(pdfPage: PDFPageProxy) {
+/** Parse a single PDF page. */
+export async function parsePage(pdfPage: PDFPageProxy): Promise<PdfPage> {
     const rawContent = await pdfPage.getTextContent();
     return parsePageItems(rawContent.items.filter((item): item is TextItem => 'str' in item));
 }

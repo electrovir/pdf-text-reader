@@ -31,7 +31,7 @@
         "publish": "virmator publish \"npm run compile && npm run test:all\"",
         "spellcheck": "virmator spellcheck",
         "test": "virmator test",
-        "test:all": "concurrently --colors --kill-others-on-fail -c auto --names types,tests,spelling,format,docs, deps \"npm run test:types\" \"npm run test:coverage\" \"npm run test:spelling\" \"npm run test:format\" \"npm run test:docs\" \"npm run test:deps\"",
+        "test:all": "concurrently --colors --kill-others-on-fail -c auto --names types,tests,spelling,format,docs,deps \"npm run test:types\" \"npm run test:coverage\" \"npm run test:spelling\" \"npm run test:format\" \"npm run test:docs\" \"npm run test:deps\"",
         "test:coverage": "npm run test coverage",
         "test:deps": "virmator deps check",
         "test:docs": "virmator docs check",
@@ -68,6 +68,7 @@
         "prettier-plugin-toml": "^1.0.0",
         "ts-node": "^10.9.1",
         "type-fest": "^4.8.1",
+        "typedoc": "^0.25.3",
         "typescript": "^5.2.2",
         "virmator": "^11.1.1"
     }

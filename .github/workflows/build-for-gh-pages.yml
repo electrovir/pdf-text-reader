@@ -1,0 +1,25 @@
+name: build-for-gh-pages
+
+on:
+    push:
+        branches:
+            - dev
+
+jobs:
+    build-for-gh-pages:
+        runs-on: 'ubuntu-latest'
+
+        steps:
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version-file: '.nvmrc'
+                  cache: 'npm'
+            - name: build
+              run: |
+                  npm ci
+                  npm run docs
+            - uses: JamesIves/github-pages-deploy-action@v4
+              with:
+                  branch: 'gh-pages'
+                  folder: 'dist-docs'
