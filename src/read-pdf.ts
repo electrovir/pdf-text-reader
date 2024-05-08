@@ -1,7 +1,6 @@
 import {join} from 'path';
 import {getDocument} from 'pdfjs-dist';
 import type {
-    BinaryData,
     DocumentInitParameters,
     PDFPageProxy,
     TextItem,

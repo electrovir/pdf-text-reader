@@ -1,11 +1,11 @@
-import {assertTypeOf} from 'run-time-assertions';
 import {assert} from 'chai';
 import {existsSync} from 'fs';
 import {join} from 'path';
+import type {TypedArray} from 'pdfjs-dist/types/src/display/api';
+import {assertTypeOf} from 'run-time-assertions';
 import type {ReadonlyDeep} from 'type-fest';
 import {PdfProgressData, ReadPdfTextParams, readPdfPages, readPdfText} from './read-pdf';
 import {nodeModulesDir, sampleFilesDir} from './repo-paths.test-helper';
-import type {TypedArray} from 'pdfjs-dist/types/src/display/api';
 
 type PdfTestFile = {
     filePath: string;
