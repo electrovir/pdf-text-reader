@@ -48,16 +48,19 @@ export type ReadPdfTextParams = PartialWithUndefined<{
      * Example: /home/ubuntu/this-repo/node_modules/pdfjs-dist
      */
     pathToPdfJsDistNodeModule: string;
+    /**
+     * All options that the Mozilla's `pdfjs-dist` package supports. This will override any options
+     * that this package passes to `pdfjs-dist`.
+     */
+    options: Partial<Omit<DocumentInitParameters, 'data' | 'url'>>;
 }> &
     RequireExactlyOne<{
         /** File path to the PDF file to read. */
-        filePath: string;
+        filePath: NonNullable<DocumentInitParameters['url']>;
         /** URL to the PDF. */
-        url: string;
+        url: NonNullable<DocumentInitParameters['url']>;
         /** PDF file data that has already been read from a PDF file. */
-        data: BinaryData;
-        /** All other options that the Mozilla `pdfjs-dist` package supports. */
-        allOptions: DocumentInitParameters;
+        data: NonNullable<DocumentInitParameters['data']>;
     }>;
 
 /**
@@ -73,6 +76,7 @@ export async function readPdfPages({
     pathToPdfJsDistNodeModule,
     progressCallback,
     url,
+    options,
 }: ReadPdfTextParams): Promise<PdfPage[]> {
     const documentLoadingTask = getDocument({
         data,
@@ -82,6 +86,7 @@ export async function readPdfPages({
         standardFontDataUrl: pathToPdfJsDistNodeModule
             ? join(pathToPdfJsDistNodeModule, 'standard_fonts')
             : undefined,
+        ...options,
     });
     if (progressCallback) {
         documentLoadingTask.onProgress = progressCallback;
