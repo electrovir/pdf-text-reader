@@ -1,6 +1,6 @@
 {
     "name": "pdf-text-reader",
-    "version": "5.1.0",
+    "version": "5.1.1",
     "description": "Dead simple pdf text reader",
     "keywords": [
         "pdf",
@@ -42,9 +42,6 @@
         "test:lint": "virmator lint",
         "test:spelling": "virmator spellcheck"
     },
-    "dependencies": {
-        "pdfjs-dist": "5.4.530"
-    },
     "devDependencies": {
         "@augment-vir/assert": "^31.59.0",
         "@augment-vir/test": "^31.59.0",
@@ -75,6 +72,7 @@
         "istanbul-smart-text-reporter": "^1.1.5",
         "markdown-code-example-inserter": "^3.0.3",
         "npm-check-updates": "^19.3.1",
+        "pdfjs-dist": "^5.4.530",
         "prettier": "~3.3.3",
         "prettier-plugin-interpolated-html-tags": "^2.0.1",
         "prettier-plugin-jsdoc": "^1.8.0",
@@ -91,6 +89,9 @@
         "typescript": "^5.9.3",
         "typescript-eslint": "^8.53.0",
         "virmator": "^14.4.3"
+    },
+    "peerDependencies": {
+        "pdfjs-dist": ">=4"
     },
     "engines": {
         "node": ">=22"
