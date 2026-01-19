@@ -1,13 +1,13 @@
-*.tgz
 .DS_Store
+.history/
 .not-committed/
+*.tgz
 /Icon?
+all-files-for-code-coverage.test.ts
 coverage/
 dist-*/
 dist/
 generated-config-*
 graphics/
 node_modules/
-src/all-files-for-code-coverage.test.ts
-ts.out
 tsconfig.tsbuildinfo

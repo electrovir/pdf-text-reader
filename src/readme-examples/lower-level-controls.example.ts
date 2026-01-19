@@ -1,6 +1,6 @@
 import * as pdfjs from 'pdfjs-dist';
-import type {TextItem} from 'pdfjs-dist/types/src/display/api';
-import {parsePageItems} from '..';
+import type {TextItem} from 'pdfjs-dist/types/src/display/api.js';
+import {parsePageItems} from '../index.js';
 
 async function main() {
     const doc = await pdfjs.getDocument('myDocument.pdf').promise;
@@ -11,4 +11,4 @@ async function main() {
     console.info(parsedPage.lines);
 }
 
-main();
+await main();

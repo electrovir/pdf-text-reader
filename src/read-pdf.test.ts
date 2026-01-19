@@ -1,11 +1,16 @@
-import {assert} from 'chai';
+import {assert} from '@augment-vir/assert';
+import {describe, it} from '@augment-vir/test';
 import {existsSync} from 'node:fs';
 import {join} from 'node:path';
 import type {TypedArray} from 'pdfjs-dist/types/src/display/api.js';
-import {assertTypeOf} from 'run-time-assertions';
 import type {ReadonlyDeep} from 'type-fest';
-import {PdfProgressData, ReadPdfTextParams, readPdfPages, readPdfText} from './read-pdf.js';
-import {nodeModulesDir, sampleFilesDir} from './repo-paths.test-helper.js';
+import {
+    type PdfProgressData,
+    type ReadPdfTextParams,
+    readPdfPages,
+    readPdfText,
+} from './read-pdf.js';
+import {nodeModulesDir, sampleFilesDir} from './repo-paths.mock.js';
 
 type PdfTestFile = {
     filePath: string;
@@ -24,6 +29,7 @@ const testFiles = [
         filePath: join(sampleFilesDir, 'dummy-with-password.pdf'),
         expectedContent: 'Dummy PDF file',
         lineCounts: [1],
+        // eslint-disable-next-line sonarjs/no-hardcoded-passwords
         pdfPassword: 'test password',
     },
     {
@@ -72,7 +78,7 @@ Three`,
 function forEachTestFile<T>(
     callback: (testFile: ReadonlyDeep<PdfTestFile>) => T,
 ): T extends Promise<any> ? Promise<Awaited<T>[]> : T[] {
-    let hasPromise = false;
+    let hasPromise = false as boolean;
     const mapped = testFiles.map((testFile) => {
         const result = callback(testFile);
         if (result instanceof Promise) {
@@ -94,14 +100,14 @@ describe(readPdfPages.name, () => {
                 url: filePath,
                 password: pdfPassword,
             });
-            assert.lengthOf(
+            assert.isLengthExactly(
                 pages,
                 lineCounts.length,
                 `file does not have expected line count: '${filePath}'`,
             );
-            assert.deepStrictEqual(
-                pages.map((page) => page.lines.length),
+            assert.deepEquals(
                 lineCounts,
+                pages.map((page) => page.lines.length),
                 `file does not have expected line lengths: '${filePath}'`,
             );
         });
@@ -139,7 +145,7 @@ describe(readPdfText.name, () => {
                 password: pdfPassword,
                 pathToPdfJsDistNodeModule: nodeModulesDir,
             });
-            assert.strictEqual(
+            assert.strictEquals(
                 stringOutput.trim(),
                 expectedContent,
                 `file does not have expected content: '${filePath}'`,
@@ -150,10 +156,10 @@ describe(readPdfText.name, () => {
 
 describe('ReadPdfTextParams', () => {
     it('matches expected types', () => {
-        assertTypeOf<Required<ReadPdfTextParams>['data']>().toEqualTypeOf<
-            string | number[] | ArrayBuffer | TypedArray
-        >();
-        assertTypeOf<Required<ReadPdfTextParams>['url']>().toEqualTypeOf<string | URL>();
-        assertTypeOf<Required<ReadPdfTextParams>['filePath']>().toEqualTypeOf<string | URL>();
+        assert
+            .tsType<Required<ReadPdfTextParams>['data']>()
+            .equals<string | number[] | ArrayBuffer | TypedArray>();
+        assert.tsType<Required<ReadPdfTextParams>['url']>().equals<string | URL>();
+        assert.tsType<Required<ReadPdfTextParams>['filePath']>().equals<string | URL>();
     });
 });

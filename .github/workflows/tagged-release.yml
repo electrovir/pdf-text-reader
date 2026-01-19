@@ -4,6 +4,12 @@ on:
     push:
         tags:
             - 'v*'
+permissions:
+    contents: write
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
 
 jobs:
     tagged-release:
@@ -11,33 +17,11 @@ jobs:
         runs-on: 'ubuntu-latest'
 
         steps:
-            - name: Checkout Repository
-              uses: actions/checkout@v4.1.1
-            - name: Setup Node
-              uses: actions/setup-node@v4
+            - uses: actions/checkout@v4.1.7
+              with:
+                  fetch-depth: 0
+            - uses: actions/setup-node@v4.0.3
               with:
                   node-version-file: '.nvmrc'
                   cache: 'npm'
-            - name: run test
-              run: |
-                  npm ci
-                  npx playwright install --with-deps
-                  npm run test:all
-            - name: pack and set vars
-              id: vars
-              run: |
-                  tagName="${GITHUB_REF#refs/*/}"
-                  originalTarName="$(npm pack)"
-                  packageNameWithoutFileExtension="${originalTarName%.tgz}"
-                  tagNameWithoutV="${tagName##v}"
-                  packageName="${packageNameWithoutFileExtension%-$tagNameWithoutV}"
-                  newTarName="$packageName-$tagName.tgz"
-                  mv "$originalTarName" "$newTarName"
-                  echo ::set-output name=tarName::"$newTarName"
-
-            - uses: 'marvinpinto/action-automatic-releases@latest'
-              with:
-                  repo_token: '${{ secrets.GITHUB_TOKEN }}'
-                  prerelease: false
-                  files: |
-                      ${{ steps.vars.outputs.tarName }}
+            - uses: electrovir/release-vir@dev

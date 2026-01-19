@@ -24,7 +24,7 @@ npm install pdf-text-reader
         console.info(pdfText);
     }
 
-    main();
+    await main();
     ```
 
 -   Read a PDF into individual pages with `readPdfPages`:
@@ -38,7 +38,7 @@ npm install pdf-text-reader
         console.info(pages[0]?.lines);
     }
 
-    main();
+    await main();
     ```
 
 See [the types](https://github.com/electrovir/pdf-text-reader/tree/master/src/read-pdf.ts) for detailed argument and return value types.
@@ -67,7 +67,7 @@ You may need to independently install the [`pdfjs-dist`](https://www.npmjs.com/p
 
 ```TypeScript
 import * as pdfjs from 'pdfjs-dist';
-import type {TextItem} from 'pdfjs-dist/types/src/display/api';
+import type {TextItem} from 'pdfjs-dist/types/src/display/api.js';
 import {parsePageItems} from 'pdf-text-reader';
 
 async function main() {
@@ -79,5 +79,5 @@ async function main() {
     console.info(parsedPage.lines);
 }
 
-main();
+await main();
 ```

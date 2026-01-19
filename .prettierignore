@@ -1,3 +1,5 @@
+*.snapshot.web.mjs
+**/.history/
 **/all-files-for-code-coverage.test.ts
 **/coverage/
 **/dist-*/
@@ -6,13 +8,5 @@
 **/graphics/
 **/node_modules/
 **/package-lock.json
-**/ts.out/
 **/tsconfig.tsbuildinfo
 /Icon?
-
-coverage/
-dist/
-graphics/
-node_modules/
-package-lock.json
-src/all-files-for-code-coverage.test.ts

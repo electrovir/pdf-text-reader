@@ -1,5 +1,5 @@
 import {join} from 'node:path';
-import {getDocument} from 'pdfjs-dist';
+import {getDocument} from 'pdfjs-dist/legacy/build/pdf.mjs';
 import type {
     DocumentInitParameters,
     PDFPageProxy,
@@ -83,7 +83,7 @@ export async function readPdfPages({
         useSystemFonts: true,
         password,
         standardFontDataUrl: pathToPdfJsDistNodeModule
-            ? join(pathToPdfJsDistNodeModule, 'standard_fonts')
+            ? join(pathToPdfJsDistNodeModule, 'standard_fonts') + '/'
             : undefined,
         ...options,
     });
@@ -116,10 +116,7 @@ export async function readPdfText(params: ReadPdfTextParams): Promise<string> {
 
 /** Combine all PDF pages into a single string. */
 export function combinePagesIntoSingleString(pages: PdfPage[]): string {
-    return pages
-        .map((page) => page.lines)
-        .flat()
-        .join('\n');
+    return pages.flatMap((page) => page.lines).join('\n');
 }
 
 /** Parse a single PDF page. */
@@ -138,17 +135,12 @@ export async function parsePage(pdfPage: PDFPageProxy): Promise<PdfPage> {
 export function parsePageItems(pdfItems: TextItem[]): PdfPage {
     const lineData: {[y: number]: TextItem[]} = {};
 
-    for (let i = 0; i < pdfItems.length; i++) {
-        const item = pdfItems[i];
-        const y = item?.transform[5];
+    for (const item of pdfItems) {
+        const y = item.transform[5];
         if (!lineData.hasOwnProperty(y)) {
             lineData[y] = [];
         }
-        // how how to intentionally test this
-        /* istanbul ignore next */
-        if (item) {
-            lineData[y]?.push(item);
-        }
+        lineData[y]?.push(item);
     }
 
     const yCoords = Object.keys(lineData)
@@ -159,6 +151,7 @@ export function parsePageItems(pdfItems: TextItem[]): PdfPage {
         .reduce((accum: number[], currentY, index, array) => {
             const nextY = array[index + 1];
             if (nextY != undefined) {
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 const currentLine = lineData[currentY]!;
                 const currentLineHeight: number = currentLine.reduce(
                     (finalValue, current) =>
@@ -177,22 +170,21 @@ export function parsePageItems(pdfItems: TextItem[]): PdfPage {
         }, []);
 
     const lines: string[] = [];
-    for (let i = 0; i < yCoords.length; i++) {
-        const y = yCoords[i];
-        // idk how to actually test this
-        /* istanbul ignore next */
-        if (y == undefined) {
-            continue;
-        }
+    for (const y of yCoords) {
         // sort by x position (position in line)
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const lineItems = lineData[y]!.sort((a, b) => a.transform[4] - b.transform[4]).filter(
             (item) => !!item.str,
         );
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const firstLineItem = lineItems[0]!;
         let line = lineItems.length ? firstLineItem.str : '';
         for (let j = 1; j < lineItems.length; j++) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const item = lineItems[j]!;
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             const lastItem = lineItems[j - 1]!;
+            // eslint-disable-next-line @typescript-eslint/restrict-plus-operands
             const xDiff = item.transform[4] - (lastItem.transform[4] + lastItem.width);
 
             // insert spaces for items that are far apart horizontally
@@ -209,7 +201,7 @@ export function parsePageItems(pdfItems: TextItem[]): PdfPage {
                     const spaceCountB = Math.ceil(xDiff / lastItem.height);
                     spaceCount = spaceCountA > spaceCountB ? spaceCountA : spaceCountB;
                 }
-                line += Array(spaceCount).fill('').join(' ');
+                line += new Array(spaceCount).fill('').join(' ');
             }
             line += item.str;
         }
